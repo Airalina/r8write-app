@@ -24,7 +24,13 @@ npm run dev
 ```sh
 php artisan key:generate
 php artisan migrate --seed
-php artisan passport:install
+php artisan passport:install 
+llenar las variables .env
+PASSPORT_CLIENT_ID=
+PASSPORT_CLIENT_SECRET=
+PASSPORT_WEB_CLIENT_ID=
+PASSPORT_WEB_CLIENT_SECRET=
+
 php artisan optimize
 php artisan queue:work
 ```
