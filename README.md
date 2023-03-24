@@ -26,4 +26,14 @@ php artisan key:generate
 php artisan migrate --seed
 php artisan passport:install
 php artisan optimize
+php artisan queue:work
+```
+
+### Flujo
+```sh
+1. Ingresar como admin y registrar vendedores (el sistema registra automaticamente como cliente) 
+email: admin@admin.com
+contraseña: password
+2. Para registrar vendedores, modulo Vendedores, estos tambien pueden loguear
+3. Los clientes solo pueden ver sus cotizaciones, los vendedores pueden crear/ver/editar en vendedores, clientes y eliminar cotizaciones
 ```

@@ -23,7 +23,7 @@ class LeadController extends ApiController
     {
         $this->userRepositories = $userRepositories;
         $this->leadRepositories = $leadRepositories;
-        $this->middleware('permission:' . User::PERMISSIONS['leads.index'])->only('index');
+        $this->middleware('permission:' . User::PERMISSIONS['leads.index']. '|' . User::PERMISSIONS['quotes.index'])->only('index');
         $this->middleware('permission:' . User::PERMISSIONS['leads.store'])->only('store');
         $this->middleware('permission:' . User::PERMISSIONS['leads.update'])->only('update');
         $this->middleware('permission:' . User::PERMISSIONS['leads.show'])->only('show');

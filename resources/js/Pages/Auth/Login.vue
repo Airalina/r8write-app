@@ -27,7 +27,9 @@ const submit = () => {
     API().post('/auth/login', form)
         .then(response => {
             const token = response.data.access_token;
+            const permissions = response.data.user.permissions;
             localStorage.setItem("token", token);
+            localStorage.setItem("permissions", permissions);
         })
         .catch(function (error) {
             console.log(error);

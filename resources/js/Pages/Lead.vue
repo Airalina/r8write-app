@@ -8,7 +8,7 @@
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg px-8 py-8">
-                    <button @click="openModal()"
+                    <button v-if="can('leads.store')" @click="openModal()"
                         class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded my-3">Crear nuevo
                         cliente</button>
 
@@ -21,12 +21,12 @@
                     </div>
                     <div class="mb-4">
                         <select v-model="order" id="order" name="order" class="
-                            text-[15px]
-                            cursor-pointer
-                            border-0 border-b-[1px]
-                            focus:ring-0
-                            pl-2
-                            pb-1">
+                                text-[15px]
+                                cursor-pointer
+                                border-0 border-b-[1px]
+                                focus:ring-0
+                                pl-2
+                                pb-1">
                             <option value="id">Orden</option>
                             <option value="first_name">Nombre</option>
                             <option value="email">Email</option>
@@ -54,11 +54,11 @@
                                 <td class="border px-4 py-2">{{ row.phone }}</td>
                                 <td class="border px-4 py-2">{{ row.site_url }}</td>
                                 <td class="border px-2 py-2">
-                                    <button @click="edit(row)"
+                                    <button v-if="can('leads.update')" @click="edit(row)"
                                         class="bg-yellow-500 hover:bg-yellow-700 mx-2 text-white font-bold py-2 px-4 rounded">Editar</button>
-                                    <button @click="show(row)"
+                                    <button v-if="can('leads.show')" @click="show(row)"
                                         class="bg-orange-500 hover:bg-orange-700 mx-2 text-white font-bold py-2 px-4 rounded">Ver</button>
-                                    <button @click="destroy(row)"
+                                    <button v-if="can('leads.delete')" @click="destroy(row)"
                                         class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">Eliminar</button>
                                 </td>
                             </tr>
@@ -82,8 +82,8 @@
                                                     class="block text-gray-700 text-sm font-bold mb-2">Nombre:</label>
                                                 <input type="text"
                                                     class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                                    id="first_name" placeholder="Ingrese nombre" required :disabled="disabled == true"
-                                                    v-model="form.first_name">
+                                                    id="first_name" placeholder="Ingrese nombre" required
+                                                    :disabled="disabled == true" v-model="form.first_name">
                                                 <ShowErrors v-if="validations.first_name" :errors="validations.first_name">
                                                 </ShowErrors>
                                             </div>
@@ -92,8 +92,8 @@
                                                     class="block text-gray-700 text-sm font-bold mb-2">Apellido:</label>
                                                 <input type="text"
                                                     class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                                    id="last_name" v-model="form.last_name" required :disabled="disabled == true"
-                                                    placeholder="Ingrese apellido">
+                                                    id="last_name" v-model="form.last_name" required
+                                                    :disabled="disabled == true" placeholder="Ingrese apellido">
                                                 <ShowErrors v-if="validations.last_name" :errors="validations.last_name">
                                                 </ShowErrors>
                                             </div>
@@ -102,7 +102,8 @@
                                                     class="block text-gray-700 text-sm font-bold mb-2">D.N.I:</label>
                                                 <input type="number"
                                                     class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                                    id="dni" v-model="form.dni" min="1" required placeholder="Ingrese dni" :disabled="disabled == true">
+                                                    id="dni" v-model="form.dni" min="1" required placeholder="Ingrese dni"
+                                                    :disabled="disabled == true">
                                                 <ShowErrors v-if="validations.dni" :errors="validations.dni"></ShowErrors>
                                             </div>
                                             <div class="mb-4">
@@ -122,8 +123,9 @@
                                                     class="block text-gray-700 text-sm font-bold mb-2">Móvil:</label>
                                                 <input type="text"
                                                     class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                                    id="phone" placeholder="Ingrese móvil" :disabled="disabled == true" required v-model="form.phone">
-                                                <ShowErrors v-if="validations.phone" :errors="validations.phone" >
+                                                    id="phone" placeholder="Ingrese móvil" :disabled="disabled == true"
+                                                    required v-model="form.phone">
+                                                <ShowErrors v-if="validations.phone" :errors="validations.phone">
                                                 </ShowErrors>
                                             </div>
 
@@ -132,8 +134,8 @@
                                                     class="block text-gray-700 text-sm font-bold mb-2">Dirección:</label>
                                                 <input type="text"
                                                     class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                                    id="address" placeholder="Ingrese dirección" required :disabled="disabled == true"
-                                                    v-model="form.address">
+                                                    id="address" placeholder="Ingrese dirección" required
+                                                    :disabled="disabled == true" v-model="form.address">
                                                 <ShowErrors v-if="validations.address" :errors="validations.address">
                                                 </ShowErrors>
                                             </div>
@@ -143,16 +145,20 @@
                                                     class="block text-gray-700 text-sm font-bold mb-2">Sitio url:</label>
                                                 <input type="text"
                                                     class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                                    id="site_url" placeholder="Ingrese sitio url" required :disabled="disabled == true"
-                                                    v-model="form.site_url">
+                                                    id="site_url" placeholder="Ingrese sitio url" required
+                                                    :disabled="disabled == true" v-model="form.site_url">
                                                 <ShowErrors v-if="validations.site_url" :errors="validations.site_url">
                                                 </ShowErrors>
                                             </div>
                                             <div class="mb-4">
                                                 <label for="description"
                                                     class="block text-gray-700 text-sm font-bold mb-2">Descripción:</label>
-                                                <textarea name="description" id="description" :disabled="disabled == true" v-model="form.description" cols="5" rows="5" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" placeholder="Ingrese descripción"></textarea>              
-                                                <ShowErrors v-if="validations.description" :errors="validations.description">
+                                                <textarea name="description" id="description" :disabled="disabled == true"
+                                                    v-model="form.description" cols="5" rows="5"
+                                                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                                    placeholder="Ingrese descripción"></textarea>
+                                                <ShowErrors v-if="validations.description"
+                                                    :errors="validations.description">
                                                 </ShowErrors>
                                             </div>
                                             <div class="mb-4" v-show="!editMode && !disabled">
@@ -205,7 +211,7 @@ import AppLayout from '@/Layouts/AppLayout.vue'
 import Welcome from '@/Pages/Welcome.vue'
 import InputSearch from '@/Components/InputSearch.vue'
 import ShowErrors from '@/Components/ShowErrors.vue'
-import { API } from "@/helper"
+import { API, hasPermission } from "@/helper"
 
 export default {
     components: {
@@ -278,12 +284,12 @@ export default {
                     console.log(error)
                 });
         },
-        edit: function (data) {console.log(data);
+        edit: function (data) {
             this.form = Object.assign({}, data);
             this.editMode = true;
             this.openModal();
         },
-        update: function (data) { console.log(data);
+        update: function (data) {
             API().put('/leads/' + data.lead_id, data)
                 .then(response => {
                     this.getLeads();
@@ -326,6 +332,9 @@ export default {
                     console.log(error);
                 });
         },
+        can: function (permission) {
+            return hasPermission(permission);
+        }
     },
     watch: {
         search(after, before) {

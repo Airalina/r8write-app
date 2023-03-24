@@ -8,7 +8,7 @@
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg px-8 py-8">
-                    <button @click="openModal()"
+                    <button v-if="can('quotes.store')" @click="openModal()"
                         class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded my-3">Crear nueva
                         cotización</button>
 
@@ -21,12 +21,12 @@
                     </div>
                     <div class="mb-4">
                         <select v-model="order" id="order" name="order" class="
-                                            text-[15px]
-                                            cursor-pointer
-                                            border-0 border-b-[1px]
-                                            focus:ring-0
-                                            pl-2
-                                            pb-1">
+                                                text-[15px]
+                                                cursor-pointer
+                                                border-0 border-b-[1px]
+                                                focus:ring-0
+                                                pl-2
+                                                pb-1">
                             <option value="id">Orden</option>
                             <option value="date">Fecha</option>
                             <option value="description">Descripción</option>
@@ -35,15 +35,15 @@
                     <div class="mb-4">
                         <label for="filter" class="block text-gray-700 text-sm font-bold mb-2">Filtrado por fecha:</label>
                         <input id="filter" name="filter" v-model="filter" type="date" class="
-                                    bg-transparent
-                                    w-25
-                                    border-0 border-b-[1px]
-                                    font-light
-                                    text-tiny
-                                    mb-5
-                                    py-2
-                                    placeholder:font-light placeholder:text-tiny
-                                    focus:ring-0 focus:border-spring-green" />
+                                        bg-transparent
+                                        w-25
+                                        border-0 border-b-[1px]
+                                        font-light
+                                        text-tiny
+                                        mb-5
+                                        py-2
+                                        placeholder:font-light placeholder:text-tiny
+                                        focus:ring-0 focus:border-spring-green" />
                     </div>
                     <table class="table-reponsive w-full">
                         <thead>
@@ -70,11 +70,11 @@
                                     </ul>
                                 </td>
                                 <td class="border px-4 py-2">
-                                    <button @click="edit(row)"
+                                    <button v-if="can('quotes.update')" @click="edit(row)"
                                         class="bg-yellow-500 hover:bg-yellow-700 mx-2 text-white font-bold py-2 px-4 rounded">Editar</button>
-                                    <button @click="show(row)"
+                                    <button v-if="can('quotes.show')" @click="show(row)"
                                         class="bg-orange-500 hover:bg-orange-700 mx-2 text-white font-bold py-2 px-4 rounded">Ver</button>
-                                    <button @click="destroy(row)"
+                                    <button v-if="can('quotes.delete')" @click="destroy(row)"
                                         class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">Eliminar</button>
                                 </td>
                             </tr>
@@ -111,12 +111,12 @@
                                                     cliente:</label>
                                                 <select v-model="form.user_id" id="user_id" name="user_id"
                                                     :disabled="disabled == true" class="
-                                                                        text-[15px]
-                                                                        cursor-pointer
-                                                                        border-0 border-b-[1px]
-                                                                        focus:ring-0
-                                                                        pl-2
-                                                                        pb-1">
+                                                                            text-[15px]
+                                                                            cursor-pointer
+                                                                            border-0 border-b-[1px]
+                                                                            focus:ring-0
+                                                                            pl-2
+                                                                            pb-1">
                                                     <option v-for="lead in leads" :value="lead.id" :key="lead.id">
                                                         {{ lead.first_name }} {{ lead.last_name }}
                                                     </option>
@@ -144,7 +144,8 @@
                                             </div>
                                             <div v-if="disabled">
                                                 <label for="user_id"
-                                                    class="block text-gray-700 text-sm font-bold mb-2">Servicios seleccionados:</label>
+                                                    class="block text-gray-700 text-sm font-bold mb-2">Servicios
+                                                    seleccionados:</label>
                                                 <li v-for="service in servicesSelected">
                                                     {{ service.description }}
                                                 </li>
@@ -155,15 +156,15 @@
                                                     fecha:</label>
                                                 <input id="date" name="date" v-model="form.date"
                                                     :disabled="disabled == true" type="date" class="
-                                                                bg-transparent
-                                                                w-full
-                                                                border-0 border-b-[1px]
-                                                                font-light
-                                                                text-tiny
-                                                                mb-5
-                                                                py-2
-                                                                placeholder:font-light placeholder:text-tiny
-                                                                focus:ring-0 focus:border-spring-green" />
+                                                                    bg-transparent
+                                                                    w-full
+                                                                    border-0 border-b-[1px]
+                                                                    font-light
+                                                                    text-tiny
+                                                                    mb-5
+                                                                    py-2
+                                                                    placeholder:font-light placeholder:text-tiny
+                                                                    focus:ring-0 focus:border-spring-green" />
                                                 <ShowErrors v-if="validations.date" :errors="validations.date">
                                                 </ShowErrors>
                                             </div>
@@ -208,7 +209,7 @@ import Welcome from '@/Pages/Welcome.vue'
 import InputSearch from '@/Components/InputSearch.vue'
 import ShowErrors from '@/Components/ShowErrors.vue'
 import Multiselect from '@vueform/multiselect'
-import { API } from "@/helper"
+import { API, hasPermission } from "@/helper"
 
 export default {
     components: {
@@ -359,7 +360,6 @@ export default {
         getLeads: function () {
             API().get('/leads')
                 .then(response => {
-                    console.log(response.data.data);
                     this.leads = response.data.data;
                 })
                 .catch(function (error) {
@@ -376,6 +376,9 @@ export default {
                     console.log(error);
                 });
         },
+        can: function (permission) {
+            return hasPermission(permission);
+        }
     },
     watch: {
         search(after, before) {

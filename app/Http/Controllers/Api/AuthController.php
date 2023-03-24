@@ -42,12 +42,8 @@ class AuthController extends ApiController
             $tokenResult = $user->createToken('Personal Access Token');
             $token = $tokenResult->token;
             $token->save();
-
-            return $this->okResponse([
-                'access_token' => $tokenResult->accessToken,
-                'token_type' => 'Bearer',
-                'expires_at' => Carbon::parse($token->expires_at)->toDateTimeString()
-            ]);
+            $response = $this->buildCredentials($user, $tokenResult);
+            return $this->okResponse($response);
         } catch (\Exception $e) {
             return $this->errorResponse($e->getMessage(), 400);
         }
@@ -71,12 +67,8 @@ class AuthController extends ApiController
             $tokenResult = $user->createToken('Personal Access Token');
             $token = $tokenResult->token;
             $token->save();
-
-            return $this->okResponse([
-                'access_token' => $tokenResult->accessToken,
-                'token_type' => 'Bearer',
-                'expires_at' => Carbon::parse($token->expires_at)->toDateTimeString()
-            ]);
+            $response = $this->buildCredentials($user, $tokenResult);
+            return $this->okResponse($response);
         } catch (\Exception $e) {
             return $this->errorResponse($e->getMessage(), 400);
         }
@@ -118,4 +110,24 @@ class AuthController extends ApiController
         }
     }
 
+    /**
+     * Crendenciales del usuario
+     * 
+     * @autor(a) Airaly Cañizales
+     * @param User $user
+     * @return Array
+     */
+    public function buildCredentials($user, $tokenResult): Array
+    {
+        $permissions = $user->getAllPermissions()->pluck('name');
+
+        return [
+            'access_token' => $tokenResult->accessToken,
+            'token_type' => 'Bearer',
+            'expires_at' => Carbon::parse($tokenResult->token->expires_at)->toDateTimeString(),
+            'user' => [
+                'permissions' => $permissions ?? []
+            ]
+        ];
+    }
 }

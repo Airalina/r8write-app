@@ -10,7 +10,9 @@ import TextInput from '@/Components/TextInput.vue';
 import { API } from "@/helper"
 
 const form = useForm({
-    name: '',
+    first_name: '',
+    last_name: '',
+    dni: '',
     email: '',
     password: '',
     password_confirmation: '',
@@ -22,7 +24,9 @@ const submit = () => {
     API().post('/auth/signup', form)
         .then(response => {
             const token = response.data.access_token;
+            const permissions = response.data.user.permissions;
             localStorage.setItem("token", token);
+            localStorage.setItem("permissions", permissions);
         })
         .catch(function (error) {
             console.log(error);

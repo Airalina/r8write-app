@@ -8,7 +8,7 @@
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg px-8 py-8">
-                    <button @click="openModal()"
+                    <button v-if="can('sellers.store')" @click="openModal()"
                         class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded my-3">Crear nuevo
                         vendedor</button>
 
@@ -51,11 +51,11 @@
                                 <td class="border px-4 py-2">{{ row.email }}</td>
                                 <td class="border px-4 py-2">{{ row.dni }}</td>
                                 <td class="border px-4 py-2">
-                                    <button @click="edit(row)"
+                                    <button v-if="can('sellers.update')" @click="edit(row)"
                                         class="bg-yellow-500 hover:bg-yellow-700 mx-2 text-white font-bold py-2 px-4 rounded">Editar</button>
-                                    <button @click="show(row)"
+                                    <button v-if="can('sellers.show')" @click="show(row)"
                                         class="bg-orange-500 hover:bg-orange-700 mx-2 text-white font-bold py-2 px-4 rounded">Ver</button>
-                                    <button @click="destroy(row)"
+                                    <button v-if="can('sellers.delete')" @click="destroy(row)"
                                         class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">Eliminar</button>
                                 </td>
                             </tr>
@@ -163,7 +163,7 @@ import AppLayout from '@/Layouts/AppLayout.vue'
 import Welcome from '@/Pages/Welcome.vue'
 import InputSearch from '@/Components/InputSearch.vue'
 import ShowErrors from '@/Components/ShowErrors.vue'
-import { API } from "@/helper"
+import { API, hasPermission } from "@/helper"
 
 export default {
     components: {
@@ -185,13 +185,7 @@ export default {
                 password: null,
             },
             sellers: [],
-            validations: {
-                first_name: null,
-                last_name: null,
-                dni: null,
-                email: null,
-                password: null,
-            },
+            validations: [],
             search: '',
             order: 'id',
             disabled: false
@@ -214,13 +208,7 @@ export default {
                 email: null,
                 password: null,
             }
-            this.validations = {
-                first_name: null,
-                last_name: null,
-                dni: null,
-                email: null,
-                password: null,
-            }
+            this.validations = []
             this.disabled = false;
         },
         save: function (data) {
@@ -233,7 +221,7 @@ export default {
                         this.closeModal();
                         this.editMode = false;
                         this.getSellers();
-                    }console.log(this.validations);
+                    }
                     this.validations = response.data.errors;
                 })
                 .catch(error => {
@@ -287,6 +275,9 @@ export default {
                     console.log(error);
                 });
         },
+        can: function (permission) {
+            return hasPermission(permission);
+        }
     },
     watch: {
         search(after, before) {
