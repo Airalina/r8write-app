@@ -240,7 +240,7 @@ export default {
             API().put('/sellers/' + data.id, data, {
                 validateStatus: status => status >= 200 && status < 300 || status === 422
             })
-                .then(response => { console.log(response);
+                .then(response => {
                     if (response.status < 300) {
                         this.getSellers();
                         this.reset();
