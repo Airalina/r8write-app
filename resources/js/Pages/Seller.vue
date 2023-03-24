@@ -19,15 +19,15 @@
                                 id="search" v-model="search" placeholder="Buscar..." />
                         </div>
                     </div>
-                    
+
                     <div class="mb-4">
                         <select v-model="order" id="order" name="order" class="
-                            text-[15px]
-                            cursor-pointer
-                            border-0 border-b-[1px]
-                            focus:ring-0
-                            pl-2
-                            pb-1">
+                                        text-[15px]
+                                        cursor-pointer
+                                        border-0 border-b-[1px]
+                                        focus:ring-0
+                                        pl-2
+                                        pb-1">
                             <option value="id">Orden</option>
                             <option value="first_name">Nombre</option>
                             <option value="email">Email</option>
@@ -79,8 +79,8 @@
                                                     class="block text-gray-700 text-sm font-bold mb-2">Nombre:</label>
                                                 <input type="text"
                                                     class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                                    id="first_name" placeholder="Ingrese nombre" required :disabled="disabled == true"
-                                                    v-model="form.first_name">
+                                                    id="first_name" placeholder="Ingrese nombre" required
+                                                    :disabled="disabled == true" v-model="form.first_name">
                                                 <ShowErrors v-if="validations.first_name" :errors="validations.first_name">
                                                 </ShowErrors>
                                             </div>
@@ -99,7 +99,8 @@
                                                     class="block text-gray-700 text-sm font-bold mb-2">D.N.I:</label>
                                                 <input type="number"
                                                     class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                                    id="dni" v-model="form.dni" min="1" required placeholder="Ingrese dni" :disabled="disabled == true">
+                                                    id="dni" v-model="form.dni" min="1" required placeholder="Ingrese dni"
+                                                    :disabled="disabled == true">
                                                 <ShowErrors v-if="validations.dni" :errors="validations.dni"></ShowErrors>
                                             </div>
                                             <div class="mb-4">
@@ -107,8 +108,8 @@
                                                     class="block text-gray-700 text-sm font-bold mb-2">Correo:</label>
                                                 <input
                                                     class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                                    id="email" v-model="form.email" type="email" required :disabled="disabled == true"
-                                                    placeholder="Ingrese email  ">
+                                                    id="email" v-model="form.email" type="email" required
+                                                    :disabled="disabled == true" placeholder="Ingrese email  ">
 
                                                 <ShowErrors v-if="validations.email" :errors="validations.email">
                                                 </ShowErrors>
@@ -118,7 +119,7 @@
                                                     class="block text-gray-700 text-sm font-bold mb-2">Contraseña:</label>
                                                 <input
                                                     class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                                    id="password" v-model="form.password" type="password" required 
+                                                    id="password" v-model="form.password" type="password" required
                                                     placeholder="Ingrese contraseña">
                                                 <ShowErrors v-if="validations.password" :errors="validations.password">
                                                 </ShowErrors>
@@ -222,7 +223,9 @@ export default {
                         this.editMode = false;
                         this.getSellers();
                     }
-                    this.validations = response.data.errors;
+                    else {
+                        this.validations = response.data.errors;
+                    }
                 })
                 .catch(error => {
                     console.log(error)
@@ -234,15 +237,21 @@ export default {
             this.openModal();
         },
         update: function (data) {
-            API().put('/sellers/' + data.id, data)
-                .then(response => {
-                    this.getSellers();
+            API().put('/sellers/' + data.id, data, {
+                validateStatus: status => status >= 200 && status < 300 || status === 422
+            })
+                .then(response => { console.log(response);
+                    if (response.status < 300) {
+                        this.getSellers();
+                        this.reset();
+                        this.closeModal();
+                    } else {
+                        this.validations = response.data.errors;
+                    }
                 })
                 .catch(function (error) {
                     console.log(error);
                 });
-            this.reset();
-            this.closeModal();
         },
         destroy: function (data) {
             if (!confirm('Are you sure want to remove?')) return;

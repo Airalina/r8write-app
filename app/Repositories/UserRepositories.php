@@ -40,7 +40,6 @@ class UserRepositories extends BaseRepository
             $queryFilter = $queryFilter->orderBy($orderBy);
         }
 
-
         return $queryFilter->paginate($pages);
     }
 }

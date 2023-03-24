@@ -21,12 +21,12 @@
                     </div>
                     <div class="mb-4">
                         <select v-model="order" id="order" name="order" class="
-                                                text-[15px]
-                                                cursor-pointer
-                                                border-0 border-b-[1px]
-                                                focus:ring-0
-                                                pl-2
-                                                pb-1">
+                                                        text-[15px]
+                                                        cursor-pointer
+                                                        border-0 border-b-[1px]
+                                                        focus:ring-0
+                                                        pl-2
+                                                        pb-1">
                             <option value="id">Orden</option>
                             <option value="date">Fecha</option>
                             <option value="description">Descripción</option>
@@ -35,15 +35,15 @@
                     <div class="mb-4">
                         <label for="filter" class="block text-gray-700 text-sm font-bold mb-2">Filtrado por fecha:</label>
                         <input id="filter" name="filter" v-model="filter" type="date" class="
-                                        bg-transparent
-                                        w-25
-                                        border-0 border-b-[1px]
-                                        font-light
-                                        text-tiny
-                                        mb-5
-                                        py-2
-                                        placeholder:font-light placeholder:text-tiny
-                                        focus:ring-0 focus:border-spring-green" />
+                                                bg-transparent
+                                                w-25
+                                                border-0 border-b-[1px]
+                                                font-light
+                                                text-tiny
+                                                mb-5
+                                                py-2
+                                                placeholder:font-light placeholder:text-tiny
+                                                focus:ring-0 focus:border-spring-green" />
                     </div>
                     <table class="table-reponsive w-full">
                         <thead>
@@ -111,12 +111,12 @@
                                                     cliente:</label>
                                                 <select v-model="form.user_id" id="user_id" name="user_id"
                                                     :disabled="disabled == true" class="
-                                                                            text-[15px]
-                                                                            cursor-pointer
-                                                                            border-0 border-b-[1px]
-                                                                            focus:ring-0
-                                                                            pl-2
-                                                                            pb-1">
+                                                                                    text-[15px]
+                                                                                    cursor-pointer
+                                                                                    border-0 border-b-[1px]
+                                                                                    focus:ring-0
+                                                                                    pl-2
+                                                                                    pb-1">
                                                     <option v-for="lead in leads" :value="lead.id" :key="lead.id">
                                                         {{ lead.first_name }} {{ lead.last_name }}
                                                     </option>
@@ -156,15 +156,15 @@
                                                     fecha:</label>
                                                 <input id="date" name="date" v-model="form.date"
                                                     :disabled="disabled == true" type="date" class="
-                                                                    bg-transparent
-                                                                    w-full
-                                                                    border-0 border-b-[1px]
-                                                                    font-light
-                                                                    text-tiny
-                                                                    mb-5
-                                                                    py-2
-                                                                    placeholder:font-light placeholder:text-tiny
-                                                                    focus:ring-0 focus:border-spring-green" />
+                                                                            bg-transparent
+                                                                            w-full
+                                                                            border-0 border-b-[1px]
+                                                                            font-light
+                                                                            text-tiny
+                                                                            mb-5
+                                                                            py-2
+                                                                            placeholder:font-light placeholder:text-tiny
+                                                                            focus:ring-0 focus:border-spring-green" />
                                                 <ShowErrors v-if="validations.date" :errors="validations.date">
                                                 </ShowErrors>
                                             </div>
@@ -294,7 +294,9 @@ export default {
                         this.editMode = false;
                         this.getQuotes();
                     }
-                    this.validations = response.data.errors;
+                    else {
+                        this.validations = response.data.errors;
+                    }
                 })
                 .catch(error => {
                     console.log(error)
@@ -306,15 +308,22 @@ export default {
             this.openModal();
         },
         update: function (data) {
-            API().put('/quotes/' + data.id, data)
+            API().put('/quotes/' + data.id, data, {
+                validateStatus: status => status >= 200 && status < 300 || status === 422
+            })
                 .then(response => {
-                    this.getQuotes();
+                    if (response.status < 300) {
+                        this.getQuotes();
+                        this.reset();
+                        this.closeModal();
+                    }
+                    else {
+                        this.validations = response.data.errors;
+                    }
                 })
                 .catch(function (error) {
                     console.log(error);
                 });
-            this.reset();
-            this.closeModal();
         },
         destroy: function (data) {
             if (!confirm('Are you sure want to remove?')) return;

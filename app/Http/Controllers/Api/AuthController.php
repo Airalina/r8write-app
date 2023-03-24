@@ -37,8 +37,6 @@ class AuthController extends ApiController
             $user = new User($validatedData);
             $user = $this->userRepositories->save($user);
             $user->assignRole(User::ROLES['lead']);
-
-            $user->notify(new UserRegister);
             $tokenResult = $user->createToken('Personal Access Token');
             $token = $tokenResult->token;
             $token->save();

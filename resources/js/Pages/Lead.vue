@@ -21,12 +21,12 @@
                     </div>
                     <div class="mb-4">
                         <select v-model="order" id="order" name="order" class="
-                                text-[15px]
-                                cursor-pointer
-                                border-0 border-b-[1px]
-                                focus:ring-0
-                                pl-2
-                                pb-1">
+                                        text-[15px]
+                                        cursor-pointer
+                                        border-0 border-b-[1px]
+                                        focus:ring-0
+                                        pl-2
+                                        pb-1">
                             <option value="id">Orden</option>
                             <option value="first_name">Nombre</option>
                             <option value="email">Email</option>
@@ -278,7 +278,9 @@ export default {
                         this.editMode = false;
                         this.getLeads();
                     }
-                    this.validations = response.data.errors;
+                    else {
+                        this.validations = response.data.errors;
+                    }
                 })
                 .catch(error => {
                     console.log(error)
@@ -290,15 +292,21 @@ export default {
             this.openModal();
         },
         update: function (data) {
-            API().put('/leads/' + data.lead_id, data)
+            API().put('/leads/' + data.lead_id, data, {
+                validateStatus: status => status >= 200 && status < 300 || status === 422
+            })
                 .then(response => {
-                    this.getLeads();
+                    if (response.status < 300) {
+                        this.getLeads();
+                        this.reset();
+                        this.closeModal();
+                    } else {
+                        this.validations = response.data.errors;
+                    }
                 })
                 .catch(function (error) {
                     console.log(error);
                 });
-            this.reset();
-            this.closeModal();
         },
         destroy: function (data) {
             if (!confirm('Are you sure want to remove?')) return;
