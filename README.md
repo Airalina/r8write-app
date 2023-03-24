@@ -1,6 +1,6 @@
 ### Configuraciones para correr el proyecto
 ```sh
-git clone www.local.com
+git clone https://github.com/Airalina/r8write-app.git
 composer install
 ```
 
