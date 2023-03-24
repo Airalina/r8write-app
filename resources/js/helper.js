@@ -1,7 +1,7 @@
 import axios from "axios";
 
 export const API = () => {
-  let baseURL = "http://r8write-app-backend.test" || "";
+  let baseURL = "http://r8write-app.test" || "";
 
   if (baseURL.substr(-1) === "/") {
     baseURL = baseURL.substr(0, baseURL.length - 1);
@@ -17,20 +17,7 @@ export const API = () => {
 
   const jwt = localStorage.getItem("token");
 instance.defaults.headers.common.Authorization = `Bearer ${jwt}`;
-
-  // instance.interceptors.request.use(
-  //     (cfg) => {
-  //         const jwt = localStorage.getItem('token');
-  //         const config: any = cfg;
-  //         if (jwt) {
-  //             config.headers.common.Authorization = `Bearer ${jwt}`;
-  //         }
-  //         return config;
-  //     },
-  //     (error) => {
-  //         Promise.reject(error);
-  //     }
-  // );
+  const permissionsDB = localStorage.getItem("permissions");
 
   instance.interceptors.response.use(
     function (response) {
@@ -39,4 +26,14 @@ instance.defaults.headers.common.Authorization = `Bearer ${jwt}`;
     function (error) {}
   );
   return instance;
+};
+
+export const hasPermission = (permission) => {
+  const scopes = localStorage.getItem("permissions"); // permissions list 
+  const permissions = scopes.split(','); 
+  if (scopes) {
+    const findPermission = permissions.find(element => element == permission);
+    return findPermission ? true : false;
+  }
+  return false;
 };

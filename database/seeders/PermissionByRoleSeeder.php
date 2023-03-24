@@ -18,10 +18,10 @@ class PermissionByRoleSeeder extends Seeder
     public function run()
     {
         foreach (User::PERMISSIONS as $permission) {
-            Permission::findOrCreate($permission);
+            Permission::findOrCreate($permission, 'api');
         }
 
-        $admin = Role::findByName(User::ROLES['admin']);
+        $admin = Role::findByName(User::ROLES['admin'], 'api');
         $admin->givePermissionTo(User::PERMISSIONS);
 
         $sellerPermissions = [
@@ -40,7 +40,7 @@ class PermissionByRoleSeeder extends Seeder
             User::PERMISSIONS['quotes.delete'],
             User::PERMISSIONS['services.index']
         ];
-        $seller = Role::findByName(User::ROLES['seller']);
+        $seller = Role::findByName(User::ROLES['seller'], 'api');
         $seller->givePermissionTo($sellerPermissions);
 
         $leadPermissions = [
@@ -49,7 +49,7 @@ class PermissionByRoleSeeder extends Seeder
             User::PERMISSIONS['services.index']
         ];
         
-        $lead = Role::findByName(User::ROLES['lead']);
+        $lead = Role::findByName(User::ROLES['lead'], 'api');
         $lead->givePermissionTo(
             $leadPermissions
         );

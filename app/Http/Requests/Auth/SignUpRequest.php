@@ -26,10 +26,9 @@ class SignUpRequest extends FormRequest
         return [
             'first_name' => 'required|string',
             'last_name' => 'required|string',
-            'dni' => 'required|numeric|unique:users',
-            'email' => 'required|string|email|unique:users',
+            'dni' => 'required|numeric',
+            'email' => 'required|string|email',
             'password' => 'required|string',
-            'seller' => 'required|boolean',
         ];
     }
 }

@@ -3,6 +3,7 @@
 namespace App\Repositories;
 
 use App\Models\Service;
+use Illuminate\Support\Arr;
 
 class ServiceRepositories extends  BaseRepository
 {
@@ -11,13 +12,13 @@ class ServiceRepositories extends  BaseRepository
         parent::__construct($service);
     }
 
-/*    public function getWithSameFirstAndLastName(string $name)
+    public function getServices(array $servicesData)
     {
-        $first = $this->model->where('first_name', $name);
-
-        return $this->model->where('last_name', $name)
-            ->union($first)
+        $services = $this->model->select('id')
+            ->whereIn('description', Arr::pluck($servicesData, 'value'))
             ->get();
-    }*/
-
+        $services = $services->pluck('id')
+            ->toArray();
+        return $services;
+    }
 }

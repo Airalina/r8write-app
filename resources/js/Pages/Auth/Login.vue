@@ -8,7 +8,6 @@ import InputLabel from '@/Components/InputLabel.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
 import { API } from "@/helper"
-import useAuthStore from '@/stores/auth.js';
 
 import { mapState, mapMutations, mapGetters } from "vuex";
 
@@ -28,7 +27,9 @@ const submit = () => {
     API().post('/auth/login', form)
         .then(response => {
             const token = response.data.access_token;
+            const permissions = response.data.user.permissions;
             localStorage.setItem("token", token);
+            localStorage.setItem("permissions", permissions);
         })
         .catch(function (error) {
             console.log(error);

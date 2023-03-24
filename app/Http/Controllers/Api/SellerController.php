@@ -21,11 +21,11 @@ class SellerController extends ApiController
     public function __construct(UserRepositories $userRepositories)
     {
         $this->userRepositories = $userRepositories;
-      //  $this->middleware('permission:' . User::PERMISSIONS['sellers.index'])->only('index');
-      //  $this->middleware('permission:' . User::PERMISSIONS['sellers.store'])->only('store');
-      //  $this->middleware('permission:' . User::PERMISSIONS['sellers.update'])->only('update');
-       // $this->middleware('permission:' . User::PERMISSIONS['sellers.show'])->only('show');
-       // $this->middleware('permission:' . User::PERMISSIONS['sellers.delete'])->only('destroy');
+        $this->middleware('permission:' . User::PERMISSIONS['sellers.index'])->only('index');
+        $this->middleware('permission:' . User::PERMISSIONS['sellers.store'])->only('store');
+        $this->middleware('permission:' . User::PERMISSIONS['sellers.update'])->only('update');
+        $this->middleware('permission:' . User::PERMISSIONS['sellers.show'])->only('show');
+        $this->middleware('permission:' . User::PERMISSIONS['sellers.delete'])->only('destroy');
     }
 
     /**

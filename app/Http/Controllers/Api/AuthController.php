@@ -7,7 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
 use App\Http\Requests\Auth\SignUpRequest;
 use App\Models\User;
-use App\Notifications\InvocePaid;
+use App\Notifications\UserRegister;
 use App\Repositories\UserRepositories;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
@@ -36,14 +36,14 @@ class AuthController extends ApiController
             $validatedData['password'] = bcrypt($request->password);
             $user = new User($validatedData);
             $user = $this->userRepositories->save($user);
+            $user->assignRole(User::ROLES['lead']);
 
-            if ($validatedData['seller']) {
-                $user->assignRole(User::ROLES['seller']);
-            } else {
-                $user->assignRole(User::ROLES['lead']);
-            }
-            $user->notify(new InvocePaid);
-            return $this->okResponse($user, 201);
+            $user->notify(new UserRegister);
+            $tokenResult = $user->createToken('Personal Access Token');
+            $token = $tokenResult->token;
+            $token->save();
+            $response = $this->buildCredentials($user, $tokenResult);
+            return $this->okResponse($response);
         } catch (\Exception $e) {
             return $this->errorResponse($e->getMessage(), 400);
         }
@@ -67,12 +67,8 @@ class AuthController extends ApiController
             $tokenResult = $user->createToken('Personal Access Token');
             $token = $tokenResult->token;
             $token->save();
-
-            return $this->okResponse([
-                'access_token' => $tokenResult->accessToken,
-                'token_type' => 'Bearer',
-                'expires_at' => Carbon::parse($token->expires_at)->toDateTimeString()
-            ]);
+            $response = $this->buildCredentials($user, $tokenResult);
+            return $this->okResponse($response);
         } catch (\Exception $e) {
             return $this->errorResponse($e->getMessage(), 400);
         }
@@ -114,4 +110,24 @@ class AuthController extends ApiController
         }
     }
 
+    /**
+     * Crendenciales del usuario
+     * 
+     * @autor(a) Airaly Cañizales
+     * @param User $user
+     * @return Array
+     */
+    public function buildCredentials($user, $tokenResult): Array
+    {
+        $permissions = $user->getAllPermissions()->pluck('name');
+
+        return [
+            'access_token' => $tokenResult->accessToken,
+            'token_type' => 'Bearer',
+            'expires_at' => Carbon::parse($tokenResult->token->expires_at)->toDateTimeString(),
+            'user' => [
+                'permissions' => $permissions ?? []
+            ]
+        ];
+    }
 }

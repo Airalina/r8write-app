@@ -19,7 +19,7 @@ class ServiceController extends ApiController
     public function __construct(ServiceRepositories $serviceRepositories)
     {
         $this->serviceRepositories = $serviceRepositories;
-      //  $this->middleware('permission:' . User::PERMISSIONS['services.index'].',api')->only('index');
+        $this->middleware('permission:' . User::PERMISSIONS['services.index'] . ',api')->only('index');
     }
 
     /**
@@ -34,11 +34,10 @@ class ServiceController extends ApiController
             $services = $this->serviceRepositories->all();
             foreach ($services as $value) {
                 $array[$value->id] = $value->description;
-            } 
+            }
             return $this->okResponse($array);
         } catch (\Exception $e) {
             return $this->errorResponse($e->getMessage(), 400);
         }
     }
-
 }

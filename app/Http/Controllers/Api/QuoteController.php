@@ -11,6 +11,7 @@ use App\Models\Quote;
 use App\Models\Service;
 use App\Models\User;
 use App\Repositories\QuoteRepositories;
+use App\Repositories\ServiceRepositories;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
@@ -19,16 +20,17 @@ use Illuminate\Support\Arr;
 class QuoteController extends ApiController
 {
 
-    private $quoteRepositories;
+    private $quoteRepositories, $serviceRepositories;
 
-    public function __construct(QuoteRepositories $quoteRepositories)
+    public function __construct(QuoteRepositories $quoteRepositories, ServiceRepositories $serviceRepositories)
     {
         $this->quoteRepositories = $quoteRepositories;
-        // $this->middleware('permission:' . User::PERMISSIONS['quotes.index'])->only('index');
-        // $this->middleware('permission:' . User::PERMISSIONS['quotes.store'])->only('store');
-        // $this->middleware('permission:' . User::PERMISSIONS['quotes.update'])->only('update');
-        // $this->middleware('permission:' . User::PERMISSIONS['quotes.show'])->only('show');
-        // $this->middleware('permission:' . User::PERMISSIONS['quotes.delete'])->only('destroy');
+        $this->serviceRepositories = $serviceRepositories;
+        $this->middleware('permission:' . User::PERMISSIONS['quotes.index'])->only('index');
+        $this->middleware('permission:' . User::PERMISSIONS['quotes.store'])->only('store');
+        $this->middleware('permission:' . User::PERMISSIONS['quotes.update'])->only('update');
+        $this->middleware('permission:' . User::PERMISSIONS['quotes.show'])->only('show');
+        $this->middleware('permission:' . User::PERMISSIONS['quotes.delete'])->only('destroy');
     }
     /**
      * Listado de cotizaciones.
@@ -64,9 +66,7 @@ class QuoteController extends ApiController
             $validatedData = $request->validated();
             $quote = new Quote($validatedData);
             $quote = $this->quoteRepositories->save($quote);
-           
-            $services = Service::select('id')->whereIn('description', Arr::pluck($validatedData['services'], 'value'))->get();
-            $services = $services->pluck('id')->toArray();
+            $services = $this->serviceRepositories->getServices($validatedData['services']);
             $this->quoteRepositories->sync($quote, $services);
             return new QuoteResource($quote);
         } catch (\Exception $e) {
