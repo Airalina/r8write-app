@@ -228,6 +228,7 @@ export default {
                 address: null,
                 site_url: null,
                 description: null,
+                lead_id: null,
             },
             leads: [],
             validations: [],
@@ -256,6 +257,7 @@ export default {
                 address: null,
                 site_url: null,
                 description: null,
+                lead_id: null,
             }
             this.disabled = false;
         },
@@ -276,13 +278,13 @@ export default {
                     console.log(error)
                 });
         },
-        edit: function (data) {
+        edit: function (data) {console.log(data);
             this.form = Object.assign({}, data);
             this.editMode = true;
             this.openModal();
         },
-        update: function (data) {
-            API().put('/leads/' + data.id, data)
+        update: function (data) { console.log(data);
+            API().put('/leads/' + data.lead_id, data)
                 .then(response => {
                     this.getLeads();
                 })
@@ -294,7 +296,7 @@ export default {
         },
         destroy: function (data) {
             if (!confirm('Are you sure want to remove?')) return;
-            API().delete('/leads/' + data.id, data)
+            API().delete('/leads/' + data.lead_id, data)
                 .then(response => {
                     this.getLeads();
                 })
@@ -304,7 +306,7 @@ export default {
             this.reset();
             this.closeModal();
         },
-        show: function (data) {s
+        show: function (data) {
             this.form = Object.assign({}, data);
             this.disabled = true;
             this.openModal();

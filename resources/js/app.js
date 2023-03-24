@@ -6,19 +6,7 @@ import { createInertiaApp } from '@inertiajs/vue3';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import { ZiggyVue } from '../../vendor/tightenco/ziggy/dist/vue.m';
 
-import {createStore} from "vuex";
-import useAuthStore from "./stores/auth";
-
-
 const appName = window.document.getElementsByTagName('title')[0]?.innerText || 'Laravel';
-const store = createStore({
-    modules: {
-        useAuthStore,
-    },
-    state: {
-    },
-    mutations: {}
-});
 
 createInertiaApp({
     title: (title) => `${title} - ${appName}`,
@@ -27,7 +15,6 @@ createInertiaApp({
         return createApp({ render: () => h(App, props) })
             .use(plugin)
             .use(ZiggyVue, Ziggy)
-            .use(store)
             .mount(el);
     },
     progress: {

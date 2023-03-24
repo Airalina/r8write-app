@@ -17,6 +17,8 @@ class User extends Authenticatable
     use Notifiable;
     use HasRoles;
 
+    protected $guard_name =  'api';
+
     public const ROLES = [
         'lead' => 'lead',
         'seller' => 'seller',

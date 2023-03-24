@@ -7,6 +7,7 @@ import InputError from '@/Components/InputError.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
+import { API } from "@/helper"
 
 const form = useForm({
     name: '',
@@ -18,6 +19,14 @@ const form = useForm({
 
 
 const submit = () => {
+    API().post('/auth/signup', form)
+        .then(response => {
+            const token = response.data.access_token;
+            localStorage.setItem("token", token);
+        })
+        .catch(function (error) {
+            console.log(error);
+        });
     form.post(route('register'), {
         onFinish: () => form.reset('password', 'password_confirmation'),
     });
@@ -34,17 +43,43 @@ const submit = () => {
 
         <form @submit.prevent="submit">
             <div>
-                <InputLabel for="name" value="Name" />
+                <InputLabel for="first_name" value="Nombre" />
                 <TextInput
-                    id="name"
-                    v-model="form.name"
+                    id="first_name"
+                    v-model="form.first_name"
                     type="text"
                     class="mt-1 block w-full"
                     required
                     autofocus
-                    autocomplete="name"
+                    autocomplete="first_name"
                 />
-                <InputError class="mt-2" :message="form.errors.name" />
+                <InputError class="mt-2" :message="form.errors.first_name" />
+            </div>
+            <div>
+                <InputLabel for="last_name" value="Apellido" />
+                <TextInput
+                    id="last_name"
+                    v-model="form.last_name"
+                    type="text"
+                    class="mt-1 block w-full"
+                    required
+                    autofocus
+                    autocomplete="last_name"
+                />
+                <InputError class="mt-2" :message="form.errors.last_name" />
+            </div>
+            <div>
+                <InputLabel for="dni" value="D.N.I" />
+                <TextInput
+                    id="dni"
+                    v-model="form.dni"
+                    type="text"
+                    class="mt-1 block w-full"
+                    required
+                    autofocus
+                    autocomplete="dni"
+                />
+                <InputError class="mt-2" :message="form.errors.dni" />
             </div>
 
             <div class="mt-4">
@@ -85,7 +120,7 @@ const submit = () => {
                 />
                 <InputError class="mt-2" :message="form.errors.password_confirmation" />
             </div>
-
+            
             <div v-if="$page.props.jetstream.hasTermsAndPrivacyPolicyFeature" class="mt-4">
                 <InputLabel for="terms">
                     <div class="flex items-center">

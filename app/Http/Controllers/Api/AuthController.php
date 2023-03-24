@@ -7,7 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
 use App\Http\Requests\Auth\SignUpRequest;
 use App\Models\User;
-use App\Notifications\InvocePaid;
+use App\Notifications\UserRegister;
 use App\Repositories\UserRepositories;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
@@ -36,14 +36,18 @@ class AuthController extends ApiController
             $validatedData['password'] = bcrypt($request->password);
             $user = new User($validatedData);
             $user = $this->userRepositories->save($user);
+            $user->assignRole(User::ROLES['lead']);
 
-            if ($validatedData['seller']) {
-                $user->assignRole(User::ROLES['seller']);
-            } else {
-                $user->assignRole(User::ROLES['lead']);
-            }
-            $user->notify(new InvocePaid);
-            return $this->okResponse($user, 201);
+            $user->notify(new UserRegister);
+            $tokenResult = $user->createToken('Personal Access Token');
+            $token = $tokenResult->token;
+            $token->save();
+
+            return $this->okResponse([
+                'access_token' => $tokenResult->accessToken,
+                'token_type' => 'Bearer',
+                'expires_at' => Carbon::parse($token->expires_at)->toDateTimeString()
+            ]);
         } catch (\Exception $e) {
             return $this->errorResponse($e->getMessage(), 400);
         }

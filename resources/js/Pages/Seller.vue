@@ -185,7 +185,13 @@ export default {
                 password: null,
             },
             sellers: [],
-            validations: [],
+            validations: {
+                first_name: null,
+                last_name: null,
+                dni: null,
+                email: null,
+                password: null,
+            },
             search: '',
             order: 'id',
             disabled: false
@@ -208,6 +214,13 @@ export default {
                 email: null,
                 password: null,
             }
+            this.validations = {
+                first_name: null,
+                last_name: null,
+                dni: null,
+                email: null,
+                password: null,
+            }
             this.disabled = false;
         },
         save: function (data) {
@@ -220,7 +233,7 @@ export default {
                         this.closeModal();
                         this.editMode = false;
                         this.getSellers();
-                    }
+                    }console.log(this.validations);
                     this.validations = response.data.errors;
                 })
                 .catch(error => {

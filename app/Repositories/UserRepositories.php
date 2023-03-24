@@ -20,7 +20,9 @@ class UserRepositories extends BaseRepository
             if ($role == 'lead') {
                 $queryFilter = $queryFilter->where('first_name', 'LIKE', "%$querySearch%")
                     ->orWhere('last_name', 'LIKE', "%$querySearch%")
-                    ->orWhere('email', 'LIKE', "%$querySearch%")->orWhereHas('leads', function ($query)  use ($querySearch) {
+                    ->orWhere('email', 'LIKE', "%$querySearch%")
+                    ->orWhere('dni', 'LIKE', "%$querySearch%")
+                    ->orWhereHas('leads', function ($query)  use ($querySearch) {
                         $query->where('phone', 'LIKE', "%$querySearch%")
                             ->orWhere('site_url', 'LIKE', "%$querySearch%");
                     });
@@ -28,7 +30,8 @@ class UserRepositories extends BaseRepository
                 $queryFilter = $queryFilter->where(function ($query) use ($querySearch) {
                     $query->where('first_name', 'LIKE', "%$querySearch%")
                         ->orWhere('last_name', 'LIKE', "%$querySearch%")
-                        ->orWhere('email', 'LIKE', "%$querySearch%");
+                        ->orWhere('email', 'LIKE', "%$querySearch%")
+                        ->orWhere('dni', 'LIKE', "%$querySearch%");
                 });
             }
         }

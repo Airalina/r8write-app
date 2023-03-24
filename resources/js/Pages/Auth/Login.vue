@@ -8,7 +8,6 @@ import InputLabel from '@/Components/InputLabel.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
 import { API } from "@/helper"
-import useAuthStore from '@/stores/auth.js';
 
 import { mapState, mapMutations, mapGetters } from "vuex";
 

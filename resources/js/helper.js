@@ -1,7 +1,7 @@
 import axios from "axios";
 
 export const API = () => {
-  let baseURL = "http://r8write-app-backend.test" || "";
+  let baseURL = "http://r8write-app.test" || "";
 
   if (baseURL.substr(-1) === "/") {
     baseURL = baseURL.substr(0, baseURL.length - 1);

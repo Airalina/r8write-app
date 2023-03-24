@@ -24,11 +24,11 @@ class QuoteController extends ApiController
     public function __construct(QuoteRepositories $quoteRepositories)
     {
         $this->quoteRepositories = $quoteRepositories;
-        // $this->middleware('permission:' . User::PERMISSIONS['quotes.index'])->only('index');
-        // $this->middleware('permission:' . User::PERMISSIONS['quotes.store'])->only('store');
-        // $this->middleware('permission:' . User::PERMISSIONS['quotes.update'])->only('update');
-        // $this->middleware('permission:' . User::PERMISSIONS['quotes.show'])->only('show');
-        // $this->middleware('permission:' . User::PERMISSIONS['quotes.delete'])->only('destroy');
+        $this->middleware('permission:' . User::PERMISSIONS['quotes.index'])->only('index');
+        $this->middleware('permission:' . User::PERMISSIONS['quotes.store'])->only('store');
+        $this->middleware('permission:' . User::PERMISSIONS['quotes.update'])->only('update');
+        $this->middleware('permission:' . User::PERMISSIONS['quotes.show'])->only('show');
+        $this->middleware('permission:' . User::PERMISSIONS['quotes.delete'])->only('destroy');
     }
     /**
      * Listado de cotizaciones.

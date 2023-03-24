@@ -7,7 +7,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class InvocePaid extends Notification
+class UserRegister extends Notification
 {
     use Queueable;
 
@@ -39,12 +39,13 @@ class InvocePaid extends Notification
      * @return \Illuminate\Notifications\Messages\MailMessage
      */
     public function toMail($notifiable)
-    {
+    {   
+        $email = auth()->user()->email ?? '';
         return (new MailMessage)
-                    ->from('accg@gmail.com')
-                    ->line('The introduction to the notification.')
-                    ->action('Notification Action', url('/'))
-                    ->line('Thank you for using our application!');
+                    ->from($email)
+                    ->line('Bienvenido al sistema de gestiones.')
+                    ->action('Vuelve aquí', url('/'))
+                    ->line('Gracias por probar la aplicación!');
     }
 
     /**
@@ -60,4 +61,3 @@ class InvocePaid extends Notification
         ];
     }
 }
-//$this->notify(new MailResetPasswordNotification($token));

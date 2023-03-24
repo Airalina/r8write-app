@@ -21,12 +21,12 @@
                     </div>
                     <div class="mb-4">
                         <select v-model="order" id="order" name="order" class="
-                                        text-[15px]
-                                        cursor-pointer
-                                        border-0 border-b-[1px]
-                                        focus:ring-0
-                                        pl-2
-                                        pb-1">
+                                            text-[15px]
+                                            cursor-pointer
+                                            border-0 border-b-[1px]
+                                            focus:ring-0
+                                            pl-2
+                                            pb-1">
                             <option value="id">Orden</option>
                             <option value="date">Fecha</option>
                             <option value="description">Descripción</option>
@@ -35,15 +35,15 @@
                     <div class="mb-4">
                         <label for="filter" class="block text-gray-700 text-sm font-bold mb-2">Filtrado por fecha:</label>
                         <input id="filter" name="filter" v-model="filter" type="date" class="
-                                bg-transparent
-                                w-25
-                                border-0 border-b-[1px]
-                                font-light
-                                text-tiny
-                                mb-5
-                                py-2
-                                placeholder:font-light placeholder:text-tiny
-                                focus:ring-0 focus:border-spring-green" />
+                                    bg-transparent
+                                    w-25
+                                    border-0 border-b-[1px]
+                                    font-light
+                                    text-tiny
+                                    mb-5
+                                    py-2
+                                    placeholder:font-light placeholder:text-tiny
+                                    focus:ring-0 focus:border-spring-green" />
                     </div>
                     <table class="table-reponsive w-full">
                         <thead>
@@ -96,28 +96,38 @@
                                             <div class="mb-4">
                                                 <label for="description"
                                                     class="block text-gray-700 text-sm font-bold mb-2">Descripción:</label>
-                                                <textarea name="description" id="description" v-model="form.description" :disabled="disabled == true"
-                                                    cols="5" rows="5" 
+                                                <textarea name="description" id="description" v-model="form.description"
+                                                    :disabled="disabled == true" cols="5" rows="5"
                                                     class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                                                     placeholder="Ingrese descripción"></textarea>
 
-                                                <ShowErrors v-if="validations.description" :errors="validations.description">
+                                                <ShowErrors v-if="validations.description"
+                                                    :errors="validations.description">
                                                 </ShowErrors>
                                             </div>
                                             <div class="mb-4">
-                                                <select v-model="form.user_id" id="user_id"  name="user_id" :disabled="disabled == true" class="
-                                                                    text-[15px]
-                                                                    cursor-pointer
-                                                                    border-0 border-b-[1px]
-                                                                    focus:ring-0
-                                                                    pl-2
-                                                                    pb-1">
-                                                    <option v-for="lead in leads" :value="lead.id" :key="lead.id" >
+                                                <label for="user_id"
+                                                    class="block text-gray-700 text-sm font-bold mb-2">Seleccione
+                                                    cliente:</label>
+                                                <select v-model="form.user_id" id="user_id" name="user_id"
+                                                    :disabled="disabled == true" class="
+                                                                        text-[15px]
+                                                                        cursor-pointer
+                                                                        border-0 border-b-[1px]
+                                                                        focus:ring-0
+                                                                        pl-2
+                                                                        pb-1">
+                                                    <option v-for="lead in leads" :value="lead.id" :key="lead.id">
                                                         {{ lead.first_name }} {{ lead.last_name }}
                                                     </option>
                                                 </select>
+                                                <ShowErrors v-if="validations.user_id" :errors="validations.user_id">
+                                                </ShowErrors>
                                             </div>
                                             <div v-if="!editMode && !disabled" class="mb-4">
+                                                <label for="value"
+                                                    class="block text-gray-700 text-sm font-bold mb-2">Seleccione
+                                                    servicios:</label>
                                                 <Multiselect v-model="value" mode="tags" placeholder="Seleccione servicios"
                                                     :object="true" :resolve-on-load="false" :delay="0" :min-chars="1"
                                                     :options="services" trackBy="value" label="label"
@@ -129,20 +139,31 @@
                                                         </div>
                                                     </template>
                                                 </Multiselect>
+                                                <ShowErrors v-if="validations.services" :errors="validations.services">
+                                                </ShowErrors>
                                             </div>
                                             <div v-if="disabled">
+                                                <label for="user_id"
+                                                    class="block text-gray-700 text-sm font-bold mb-2">Servicios seleccionados:</label>
+                                                <li v-for="service in servicesSelected">
+                                                    {{ service.description }}
+                                                </li>
                                             </div>
                                             <div class="mb-4">
-                                                <input id="date" name="date" v-model="form.date" :disabled="disabled == true" type="date" class="
-                                                            bg-transparent
-                                                            w-full
-                                                            border-0 border-b-[1px]
-                                                            font-light
-                                                            text-tiny
-                                                            mb-5
-                                                            py-2
-                                                            placeholder:font-light placeholder:text-tiny
-                                                            focus:ring-0 focus:border-spring-green" />
+                                                <label for="date"
+                                                    class="block text-gray-700 text-sm font-bold mb-2">Seleccione
+                                                    fecha:</label>
+                                                <input id="date" name="date" v-model="form.date"
+                                                    :disabled="disabled == true" type="date" class="
+                                                                bg-transparent
+                                                                w-full
+                                                                border-0 border-b-[1px]
+                                                                font-light
+                                                                text-tiny
+                                                                mb-5
+                                                                py-2
+                                                                placeholder:font-light placeholder:text-tiny
+                                                                focus:ring-0 focus:border-spring-green" />
                                                 <ShowErrors v-if="validations.date" :errors="validations.date">
                                                 </ShowErrors>
                                             </div>
@@ -213,7 +234,6 @@ export default {
                 description: null,
                 services: [],
                 user_id: this.quote?.user_id || null,
-                date: null,
             },
             quotes: [],
             validations: [],
@@ -256,7 +276,7 @@ export default {
                 date: null,
                 description: null,
                 services: [],
-                user_id:null
+                user_id: null
             }
             this.servicesSelected = null
             this.disabled = false;
@@ -339,7 +359,7 @@ export default {
         getLeads: function () {
             API().get('/leads')
                 .then(response => {
-                    console.log( response.data.data);
+                    console.log(response.data.data);
                     this.leads = response.data.data;
                 })
                 .catch(function (error) {
