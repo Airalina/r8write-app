@@ -4,22 +4,6 @@ git clone https://github.com/Airalina/r8write-app.git
 composer install
 ```
 
-### Configuracion en package.json para vite
-```sh
-"scripts": {
-        "dev": "vite",
-        "build": "vite build",
-        "watch": "mix watch",
-        "watch-poll": "mix watch -- --watch-options-poll=1000",
-        "hot": "mix watch --hot",
-        "prod": "npm run production",
-```
-
-```sh
-npm install
-npm run dev
-```
-
 ### Configuracion laravel
 ```sh
 php artisan key:generate
@@ -33,6 +17,11 @@ PASSPORT_WEB_CLIENT_SECRET=
 
 php artisan optimize
 php artisan queue:work
+```
+
+```sh
+npm install
+npm run dev
 ```
 
 ### Flujo
